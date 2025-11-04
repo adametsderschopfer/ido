@@ -14,7 +14,6 @@ pub struct Task {
     pub id: String,
     pub status: TaskStatus, // default: TodoStatus::IDLE
     pub title: String,
-    pub description: String,
 }
 
 impl Task {
@@ -24,7 +23,15 @@ impl Task {
 }
 
 pub fn save_tasks(tasks: Vec<Task>) {
-    // serde_json::to_string(&tasks);
+    let j = serde_json::to_string(&tasks).unwrap();
+
+    let write_res = std::fs::write(DATA_FILE_PATH, j);
+    match write_res {
+        Err(err) => {
+            panic!("Unable to save tasks: {}", err);
+        }
+        _ => {}
+    }
 }
 
 pub fn get_all_tasks() -> Vec<Task> {
